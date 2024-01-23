@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4" id="cards">
+  <div class="col">
+    <div class="card h-100">
+      <img src="..." class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+      </div>
+    </div>
+  </div>
+</div>
+@section Scripts{
+    <script src="~/js/travel.js"></script>
+    <script >
+        let travels = spots.CommonFormat.Section;
+
+        let list = travels.map(travel => {
+            let stitle = travel.stitle;
+            let xbody = travel.xbody;
+
+            let imgSrc = "";
+            
+            try {
+                imgSrc = travel.file.img[0].text
+            } catch { }
+
+            let imgAlt = ""
+
+            try {
+                imgAlt = travel.file.img[0].description;
+            } catch { }
+
+
+
+            let card = `
+            <div class="col">
+            <div class="card h-100">
+                        <img src="${imgSrc}" class="card-img-top " alt="${imgAlt}">
+                <div class="card-body">
+                        <h5 class="card-title">${stitle}</h5>
+                                <p class="card-text">${xbody.substring(0,100)}</p>
+                </div>
+            </div>
+            </div>
+            
+            `;
+
+            return card;
+            
+        });
+
+        let cards = document.querySelector("#cards");
+        cards.innerHTML = list.join("");
+
+    </script>
+}

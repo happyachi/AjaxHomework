@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<ul>
+    <li>Tom, 3, 35000</li>
+</ul>
+
+@section Scripts{
+    <script>
+        var emps = [{ "name": "Tom", "workYears": 3, "salary": 35000 },
+        { "name": "Jack", "workYears": 5, "salary": 40000 },
+        { "name": "Mary", "workYears": 7, "salary": 45000 }];
+
+        let ul = document.querySelectorAll("ul");
+
+        // 方法一，較耗能不建議
+        // emps.forEach(e => {
+        //         ul[1].innerHTML += `<li> ${e.name} , ${e.workYears} ,${e.salary}</li>`
+        // });
+
+        let list = emps.map(emp => {
+                        const { name, workYears, salary } = emp;
+                        return `<li> ${name} , ${workYears} ,${salary}</li>`
+                    })
+
+        ul[1].innerHTML += list.join('');
+
+        
+    </script>
+}
