@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewData["Title"] = "First";
+}
+
+<h1>First</h1>
+<button id="button1" class="btn btn-primary mb-3">Ajax開始</button>
+<button id="button2" class="btn btn-primary mb-3">Ajax停止</button>
+
+<img src="~/images/Loading-bar.gif" id="img1" style="display:none" />
+<div id="div1" class="alert"></div>
+
+@section Scripts{
+    <script>
+        const btn = document.querySelector("#button1");
+        const btn2 = document.querySelector("#button2");
+        const theDiv = document.querySelector("#div1");
+        const img = document.querySelector("#img1");
+
+        let abortController;
+
+        btn2.addEventListener("click", () => {
+            if (abortController) {
+                abortController.abort();
+            }
+        });
+
+        btn.addEventListener("click", async () => {
+            // 修改sytle
+            img.style.display = "inline";
+            btn.setAttribute("disabled", "disabled");
+            theDiv.innerHTML = "";
+            theDiv.classList.remove("alert-info", "alert-danger");
+
+            abortController = new AbortController();
+            const signal = abortController.signal;
+
+            try {
+                const response = await fetch('@Url.Content("~/api/index")', {signal});
+
+                if (!response.ok) {
+                    throw new Error(response.status);
+                }
+                const data = await response.text();
+                theDiv.classList.add("alert-info");
+                theDiv.innerHTML = `<h2> ${data}</h2>`;
+
+            } catch (err) {
+                theDiv.classList.add("alert-danger");
+                theDiv.innerHTML = `<h2>${err}</h2>`
+
+            } finally { 
+                img.style.display = "none";
+                btn.removeAttribute("disabled");
+            }
+        });
+
+
+
+
+        // fetch
+        // btn.addEventListener("click", () => {
+            
+            // fetch('@Url.Content("/api/index")')
+            //     .then(response => { 
+            //         let r = response;
+            //         console.log(r)
+            //         return r.text();
+            //     })
+            //     .then(text => theDiv.innerHTML = text);
+        // });
+    </script>
+}
+

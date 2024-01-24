@@ -26,18 +26,20 @@
             let xbody = travel.xbody;
 
             let imgSrc = "";
-            
-            try {
+            if (travel.file.img.length > 0) {
                 imgSrc = travel.file.img[0].text
-            } catch { }
+            } else { 
+                imgSrc = travel.file.img.text
+            }
 
             let imgAlt = ""
-
-            try {
+            if (travel.file.img.length > 0) {
                 imgAlt = travel.file.img[0].description;
-            } catch { }
+            } else {
+                imgAlt = travel.file.img.description;
+            }
 
-
+            
 
             let card = `
             <div class="col">

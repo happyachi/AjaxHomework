@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewData["Title"] = "Road";
+}
+
+<h1>選地址</h1>
+
+<select id="city"></select>
+<select id="site_id"></select>
+<select id="croadity"></select>
+
+@section Scripts{
+    <script>
+        const city = document.querySelector('#city');
+        const siteId = document.querySelector('#site_id');
+        const croadity = document.querySelector('#croadity');
+        
+        (async () => {
+            const response = await fetch('@Url.Content("~/api/road")');
+            const js = await response.json();
+            const optCities = js.cities.map(city => `<option value="${city}">${city}</option>`);
+            city.innerHTML = optCities.join('');
+        })();
+
+        city.addEventListener('change', async (e) => {
+            let cityT = e.target.value;
+            const response = await fetch(`@Url.Content("~/api/road")?city=${cityT}`);
+            const js = await response.json();
+            const optSiteIds = js.siteIds.map(siteId => `<option value="${siteId}">${siteId}</option>`);
+            siteId.innerHTML = optSiteIds.join('');
+            croadity.innerHTML = '';
+
+        });
+
+        siteId.addEventListener('change', async (e) => {
+            let cityT = city.value;
+            let siteIdT = e.target.value;
+            let url = `@Url.Content("~/api/road")?city=${cityT}&siteId=${siteIdT}`
+            
+            const response = await fetch(url);
+            const js = await response.json();
+            const croaditys = js.croadities.map(croadity => `<option value="${croadity}">${croadity}</option>`);
+            croadity.innerHTML = croaditys.join('');
+
+        });
+        
+
+
+
+    </script>
+}
+
+

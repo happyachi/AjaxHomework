@@ -8,5 +8,12 @@ namespace WebApplication2.Controllers
         {
             return View();
         }
+
+        public IActionResult HomeWork2() 
+        { 
+            return View(); 
+        }
+
+
     }
 }

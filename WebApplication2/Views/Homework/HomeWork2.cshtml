@@ -1,0 +1,152 @@
+﻿
+@{
+    ViewData["Title"] = "HomeWork2";
+}
+
+<h1>HomeWork2</h1>
+<div class="m-4">
+    <label>姓名:</label>
+    <input type="text" name="name" id="name" />
+    <span id="nameResult" class=""></span>
+</div>
+
+<div class="m-4">
+    <label>電子信箱:</label>
+    <input type="text" name="email" id="email" />
+    <span id="emailResult"></span>
+</div>
+
+<div class="m-4">
+    <label>年紀:</label>
+    <input type="number" name="age" id="age" min="1" max="130"/>
+    <span id="ageResult"></span>
+</div>
+
+
+<button id="sumbitBtn" class="btn btn-primary">送出</button>
+
+<div id="apiResult"></div>
+
+@section Scripts{
+    <script>
+        let nameInput = document.querySelector("#name");
+        let email = document.querySelector("#email");
+        let age = document.querySelector("#age");
+        let btn = document.querySelector("#sumbitBtn");
+        let nameResult = document.querySelector("#nameResult");
+        let emailResult = document.querySelector("#emailResult");
+        let ageResult = document.querySelector("#ageResult");
+        let apiResult = document.querySelector("#apiResult");
+
+        let checkName = async () => {
+            const nameValue = event.target.value;
+            if (nameValue == "") {
+                nameResult.classList.remove("alert", "alert-danger", "alert-info");
+                nameResult.innerHTML = "";
+            } else {
+                const response = await fetch(`@Url.Content("~/api/CheckAccount")?name=${nameValue}`)
+                const resultJson = await response.json();
+
+                nameResult.classList.remove("alert", "alert-danger", "alert-info");
+
+                if (resultJson.nameCheck) {
+                    nameResult.classList.add("alert", "alert-danger");
+                } else {
+                    nameResult.classList.add("alert", "alert-info");
+                }
+                nameResult.innerHTML = resultJson.result;
+            }
+        };
+
+        let checkEmail = async () => {
+            const emailValue = email.value;
+            if (emailValue == "") {
+                emailResult.classList.remove("alert", "alert-danger", "alert-info");
+                emailResult.innerHTML = "";
+            } else {
+                const response = await fetch(`@Url.Content("~/api/CheckEmail")?email=${emailValue}`)
+                const resultJson = await response.json();
+
+                emailResult.classList.remove("alert", "alert-danger", "alert-info");
+
+                if (resultJson.nameCheck) {
+                    emailResult.classList.add("alert", "alert-danger");
+                } else {
+                    emailResult.classList.add("alert", "alert-info");
+                }
+                emailResult.innerHTML = resultJson.result;
+            }
+        };
+
+        let checkIsNotNull = () => {
+            let isName = nameInput.value != "";
+            if (!isName) {
+                nameResult.classList.add("alert", "alert-danger");
+                nameResult.innerHTML = "不得為空";
+            }
+
+            let isEmail = email.value != "";
+            if (!isName) {
+                emailResult.classList.add("alert", "alert-danger");
+                emailResult.innerHTML = "不得為空";
+            }
+
+            let isAge = age.value != "";
+            if (!isAge) {
+                ageResult.classList.add("alert", "alert-danger");
+                ageResult.innerHTML = "不得為空";
+            } else {
+                ageResult.classList.remove("alert", "alert-danger");
+                ageResult.innerHTML = "";
+            }
+
+            return isName & isEmail & isAge;
+        }
+
+
+        nameInput.addEventListener("change", () => {
+            checkName(); 
+        });
+
+        email.addEventListener("change",  () => {
+            checkEmail();
+        });
+
+        age.addEventListener("change", () => {
+            let isAge = age.value != "";
+            if (!isAge) {
+                ageResult.classList.add("alert", "alert-danger");
+                ageResult.innerHTML = "不得為空";
+            } else {
+                ageResult.classList.remove("alert", "alert-danger");
+                ageResult.innerHTML = "";
+            }
+        });
+
+        btn.addEventListener("click", () => {
+            apiResult.classList.remove("alert", "alert-info", "alert-danger");
+            apiResult.innerHTML = "";
+
+            let isConfirm = nameResult.classList.contains("alert-info") & emailResult.classList.contains("alert-info");
+
+            if (checkIsNotNull() & isConfirm) {
+                (async () => {
+                    const response = await fetch(`@Url.Content("~/api/ChickTotal")?name=${nameInput.value}&email=${email.value}&age=${age.value}`)
+                    const text = await response.text();
+                    apiResult.classList.add("alert", "alert-info");
+                    apiResult.innerHTML = text;
+                })();
+
+                
+            } else {
+                apiResult.classList.add("alert", "alert-danger");
+                apiResult.innerHTML = "內容有誤";
+            }
+
+
+
+            
+
+        });
+    </script>
+}
